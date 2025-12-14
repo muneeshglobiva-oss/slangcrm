@@ -7,20 +7,15 @@ const fs = require('fs');
 const csv = require('csv-parser');
 
 const app = express();
+require('dotenv').config();
 const PORT = process.env.PORT || 4000;
-
-// ...existing code...
-
-// ...existing code...
-// CSV upload and bulk insert (must be after multer/upload is defined)
-
 
 // MySQL connection
 const dbConfig = {
-  host: 'srv1816.hstgr.io',
-  user: 'u477896473_sl',
-  password: 'Sl@@ng@1212', // Set your MySQL root password
-  database: 'u477896473_slangprod',
+  host: process.env.DB_HOST || 'srv1816.hstgr.io',
+  user: process.env.DB_USER || 'u477896473_sl',
+  password: process.env.DB_PASSWORD || 'Sl@@ng@1212',
+  database: process.env.DB_NAME || 'u477896473_slangprod',
 };
 
 // Multer setup for image uploads

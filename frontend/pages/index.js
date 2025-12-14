@@ -11,7 +11,7 @@ export default function Dashboard() {
   const [modal, setModal] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/api/parts').then(res => {
+    axios.get('/api/parts').then(res => {
       setParts(res.data);
       setFiltered(res.data);
     });
@@ -85,7 +85,7 @@ export default function Dashboard() {
         <div className="modal-bg" onClick={() => setModal(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <h2>{modal.model_number}</h2>
-            {modal.image && <img src={`http://localhost:4000/uploads/${modal.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
+            {modal.image && <img src={`/uploads/${modal.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
             <div className="modal-details-2col">
               <div className="modal-col modal-col-left">
                 <div><b>Model Number:</b> {modal.model_number}</div>

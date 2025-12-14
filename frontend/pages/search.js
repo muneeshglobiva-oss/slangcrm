@@ -8,7 +8,7 @@ export default function SearchPage() {
   const [selected, setSelected] = useState(null);
 
   function handleSearch() {
-    axios.get(`http://localhost:4000/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data));
+    axios.get(`/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data));
   }
 
   return (
@@ -51,7 +51,7 @@ export default function SearchPage() {
         <div className="modal-bg" onClick={() => setSelected(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <h2>{selected.model_number}</h2>
-            {selected.image && <img src={`http://localhost:4000/uploads/${selected.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
+            {selected.image && <img src={`/uploads/${selected.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
             <div className="modal-details-2col">
               <div className="modal-col modal-col-left">
                 <div><b>Model Number:</b> {selected.model_number}</div>

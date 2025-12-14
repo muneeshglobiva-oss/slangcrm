@@ -20,7 +20,7 @@ export default function UploadCSV() {
     const formData = new FormData();
     formData.append('csv', file);
     try {
-      const res = await fetch('http://localhost:4000/api/parts/upload-csv', {
+      const res = await fetch('/api/parts/upload-csv', {
         method: 'POST',
         body: formData,
       });

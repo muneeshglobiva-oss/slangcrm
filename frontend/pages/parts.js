@@ -19,7 +19,7 @@ export default function PartManagement() {
   const [modal, setModal] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/api/parts').then(res => setParts(res.data));
+    axios.get('/api/parts').then(res => setParts(res.data));
   }, [refresh]);
 
   function handleChange(e) {
@@ -54,9 +54,9 @@ export default function PartManagement() {
       if (v !== null && v !== undefined) data.append(k, v);
     });
     if (editing) {
-      await axios.put(`http://localhost:4000/api/parts/${editing}`, data);
+      await axios.put(`/api/parts/${editing}`, data);
     } else {
-      await axios.post('http://localhost:4000/api/parts', data);
+      await axios.post('/api/parts', data);
     }
     setRefresh(r => r + 1);
     handleCancel();
@@ -64,7 +64,7 @@ export default function PartManagement() {
 
   async function handleDelete(id) {
     if (confirm('Delete this part?')) {
-      await axios.delete(`http://localhost:4000/api/parts/${id}`);
+      await axios.delete(`/api/parts/${id}`);
       setRefresh(r => r + 1);
     }
   }
@@ -151,7 +151,7 @@ export default function PartManagement() {
                 <td>{part.part_pseudo_name}</td>
                 <td>{part.part_weight}</td>
                 <td>{part.part_size}</td>
-                <td>{part.image && <img src={`http://localhost:4000/uploads/${part.image}`} alt="part" style={{ width: 40, height: 40, objectFit: 'cover' }} />}</td>
+                <td>{part.image && <img src={`/uploads/${part.image}`} alt="part" style={{ width: 40, height: 40, objectFit: 'cover' }} />}</td>
                 <td>{part.part_description}</td>
                 <td onClick={e => e.stopPropagation()}>
                   <button onClick={() => handleEdit(part)}>Edit</button>
@@ -165,7 +165,7 @@ export default function PartManagement() {
           <div className="modal-bg" onClick={() => setModal(null)}>
             <div className="modal" onClick={e => e.stopPropagation()}>
               <h2>{modal.model_number}</h2>
-              {modal.image && <img src={`http://localhost:4000/uploads/${modal.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
+              {modal.image && <img src={`/uploads/${modal.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
               <div className="modal-details-2col">
                 <div className="modal-col modal-col-left">
                   <div><b>Model Number:</b> {modal.model_number}</div>
