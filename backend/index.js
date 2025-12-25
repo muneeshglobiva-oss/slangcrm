@@ -85,29 +85,23 @@ app.post('/api/auth/init-users', async (req, res) => {
   try {
     const conn = await getConnection();
 
-    // Check if users already exist
-    const [existing] = await conn.execute('SELECT COUNT(*) as count FROM users');
-    if (existing[0].count > 0) {
-      await conn.end();
-      return res.json({ message: 'Users already initialized' });
-    }
-
     // Create test users
     const hashedAdminPassword = await bcrypt.hash('admin123', 10);
     const hashedUserPassword = await bcrypt.hash('user123', 10);
 
+    // Update or insert
     await conn.execute(
-      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE password = VALUES(password)',
       ['Admin User', 'admin@example.com', hashedAdminPassword, 'admin']
     );
 
     await conn.execute(
-      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE password = VALUES(password)',
       ['Regular User', 'user@example.com', hashedUserPassword, 'user']
     );
 
     await conn.end();
-    res.json({ message: 'Test users created successfully' });
+    res.json({ message: 'Test users updated successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
