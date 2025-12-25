@@ -29,8 +29,8 @@ export default function Dashboard() {
 
 
   // Model and Parts count
-  const modelCount = new Set(parts.map(p => p.model_number)).size;
-  const partsCount = parts.length;
+  const modelCount = Array.isArray(parts) ? new Set(parts.map(p => p.model_number)).size : 0;
+  const partsCount = Array.isArray(parts) ? parts.length : 0;
 
   return (
     <div className="dashboard-container">
