@@ -26,9 +26,14 @@ export default function PartManagement() {
     const params = { page, limit: 10 };
     if (search) params.q = search;
     axios.get('/api/parts', { params }).then(res => {
-      setParts(res.data.parts);
-      setTotal(res.data.total);
-      setTotalPages(res.data.totalPages);
+      setParts(res.data.parts || []);
+      setTotal(res.data.total || 0);
+      setTotalPages(res.data.totalPages || 1);
+    }).catch(err => {
+      console.error('Error fetching parts:', err);
+      setParts([]);
+      setTotal(0);
+      setTotalPages(1);
     });
   }, [page, search, refresh]);
 
