@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-export default function Sidebar() {
+export default function Sidebar({ user, logout }) {
   const [open, setOpen] = useState(true);
   return (
     <>
@@ -24,13 +24,36 @@ export default function Sidebar() {
           <Link href="/search">
             <span><span className="icon">🔍</span> Search</span>
           </Link>
-          <Link href="/parts">
-            <span><span className="icon">➕</span> Add Product</span>
+          <Link href="/profile">
+            <span><span className="icon">👤</span> Profile</span>
           </Link>
-          <Link href="/upload-csv">
-            <span><span className="icon">⬆️</span> Upload Data</span>
-          </Link>
+          {user && user.role === 'admin' && (
+            <>
+              <Link href="/parts">
+                <span><span className="icon">➕</span> Add Product</span>
+              </Link>
+              <Link href="/upload-csv">
+                <span><span className="icon">⬆️</span> Upload Data</span>
+              </Link>
+              <Link href="/users">
+                <span><span className="icon">👥</span> Manage Users</span>
+              </Link>
+            </>
+          )}
         </nav>
+        {user && (
+          <div className="sidebar-user" style={{ display: open ? 'block' : 'none', position: 'absolute', bottom: '1rem', left: '1rem', right: '1rem' }}>
+            <div className="user-info" style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div className="user-avatar" style={{ width: '32px', height: '32px', background: '#ccc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '0.5rem' }}>
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <span>{user.name}</span>
+            </div>
+            <button onClick={logout} style={{ width: '100%', padding: '0.5rem', background: '#dc3545', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              Logout
+            </button>
+          </div>
+        )}
         <style jsx>{`
           .sidebar {
             background: linear-gradient(180deg, #f8fafc 0%, #e9f0f7 100%);
