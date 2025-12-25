@@ -85,58 +85,54 @@ export default function PartManagement() {
   }
 
   return (
-    <div className="part-mgmt-container">
-      <h1>Add / Edit Product Part</h1>
-      <form className="part-form" onSubmit={handleSubmit}>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="model_number">Model Number</label>
-            <input id="model_number" name="model_number" value={form.model_number} onChange={handleChange} required />
+    <div className="max-w-6xl mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-8">Add / Edit Product Part</h1>
+      <form className="bg-white rounded-lg shadow-md p-6 mb-8" onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label htmlFor="model_number" className="block text-sm font-medium text-gray-700 mb-2">Model Number</label>
+            <input id="model_number" name="model_number" value={form.model_number} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-          <div className="form-group">
-            <label htmlFor="article_number">Article Number</label>
-            <input id="article_number" name="article_number" value={form.article_number} onChange={handleChange} required />
-          </div>
-        </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="article_name">Article Name</label>
-            <input id="article_name" name="article_name" value={form.article_name} onChange={handleChange} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="part_name">Part Number</label>
-            <input id="part_name" name="part_name" value={form.part_name} onChange={handleChange} required />
+          <div>
+            <label htmlFor="article_number" className="block text-sm font-medium text-gray-700 mb-2">Article Number</label>
+            <input id="article_number" name="article_number" value={form.article_number} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <div className="form-row">
-          <div className="form-group" style={{ flex: 2 }}>
-            <label htmlFor="part_pseudo_name">Part Pseudo Name</label>
-            <textarea id="part_pseudo_name" name="part_pseudo_name" value={form.part_pseudo_name} onChange={handleChange} rows={2} style={{ resize: 'vertical' }} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label htmlFor="article_name" className="block text-sm font-medium text-gray-700 mb-2">Article Name</label>
+            <input id="article_name" name="article_name" value={form.article_name} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-          <div className="form-group">
-            <label htmlFor="part_weight">Part Weight</label>
-            <input id="part_weight" name="part_weight" value={form.part_weight} onChange={handleChange} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="part_size">Part Size</label>
-            <input id="part_size" name="part_size" value={form.part_size} onChange={handleChange} />
+          <div>
+            <label htmlFor="part_name" className="block text-sm font-medium text-gray-700 mb-2">Part Number</label>
+            <input id="part_name" name="part_name" value={form.part_name} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <div className="form-row">
-          <div className="form-group" style={{ flex: 1 }}>
-            <label htmlFor="part_description">Part Description</label>
-            <textarea id="part_description" name="part_description" value={form.part_description} onChange={handleChange} rows={3} style={{ resize: 'vertical' }} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="md:col-span-2">
+            <label htmlFor="part_pseudo_name" className="block text-sm font-medium text-gray-700 mb-2">Part Pseudo Name</label>
+            <textarea id="part_pseudo_name" name="part_pseudo_name" value={form.part_pseudo_name} onChange={handleChange} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical" />
+          </div>
+          <div>
+            <label htmlFor="part_weight" className="block text-sm font-medium text-gray-700 mb-2">Part Weight</label>
+            <input id="part_weight" name="part_weight" value={form.part_weight} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label htmlFor="part_size" className="block text-sm font-medium text-gray-700 mb-2">Part Size</label>
+            <input id="part_size" name="part_size" value={form.part_size} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="image">Image</label>
-            <input type="file" id="image" name="image" accept="image/*" onChange={handleChange} />
-          </div>
+        <div className="mb-6">
+          <label htmlFor="part_description" className="block text-sm font-medium text-gray-700 mb-2">Part Description</label>
+          <textarea id="part_description" name="part_description" value={form.part_description} onChange={handleChange} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-vertical" />
         </div>
-        <div className="form-row">
-          <button type="submit">{editing ? 'Update' : 'Add'} Part</button>
-          {editing && <button type="button" onClick={handleCancel}>Cancel</button>}
+        <div className="mb-6">
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">Image</label>
+          <input type="file" id="image" name="image" accept="image/*" onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div className="flex gap-4">
+          <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold">{editing ? 'Update' : 'Add'} Part</button>
+          {editing && <button type="button" onClick={handleCancel} className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 font-semibold">Cancel</button>}
         </div>
       </form>
       <div className="part-list">
@@ -157,104 +153,69 @@ export default function PartManagement() {
             <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>Next</button>
           </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Model #</th>
-              <th>Article #</th>
-              <th>Article Name</th>
-              <th>Part Number</th>
-              <th>Pseudo Name</th>
-              <th>Weight</th>
-              <th>Size</th>
-              <th>Image</th>
-              <th>Description</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parts.map(part => (
-              <tr key={part.id} className="clickable-row" onClick={() => setModal(part)} style={{ cursor: 'pointer' }}>
-                <td style={{ color: '#0070f3', textDecoration: 'underline' }}>{part.model_number}</td>
-                <td>{part.article_number}</td>
-                <td>{part.article_name}</td>
-                <td>{part.part_name}</td>
-                <td>{part.part_pseudo_name}</td>
-                <td>{part.part_weight}</td>
-                <td>{part.part_size}</td>
-                <td>{part.image && <img src={`/uploads/${part.image}`} alt="part" style={{ width: 40, height: 40, objectFit: 'cover' }} />}</td>
-                <td>{part.part_description}</td>
-                <td onClick={e => e.stopPropagation()}>
-                  <button onClick={() => handleEdit(part)}>Edit</button>
-                  <button onClick={() => handleDelete(part.id)} style={{ color: 'red' }}>Delete</button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full bg-white border border-gray-300 rounded shadow">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="px-4 py-2 text-left">Model #</th>
+                <th className="px-4 py-2 text-left">Article #</th>
+                <th className="px-4 py-2 text-left">Article Name</th>
+                <th className="px-4 py-2 text-left">Part Number</th>
+                <th className="px-4 py-2 text-left">Pseudo Name</th>
+                <th className="px-4 py-2 text-left">Weight</th>
+                <th className="px-4 py-2 text-left">Size</th>
+                <th className="px-4 py-2 text-left">Image</th>
+                <th className="px-4 py-2 text-left">Description</th>
+                <th className="px-4 py-2 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {parts.map(part => (
+                <tr key={part.id} className="cursor-pointer hover:bg-gray-50" onClick={() => setModal(part)}>
+                  <td className="px-4 py-2 text-blue-600 underline">{part.model_number}</td>
+                  <td className="px-4 py-2">{part.article_number}</td>
+                  <td className="px-4 py-2">{part.article_name}</td>
+                  <td className="px-4 py-2">{part.part_name}</td>
+                  <td className="px-4 py-2">{part.part_pseudo_name}</td>
+                  <td className="px-4 py-2">{part.part_weight}</td>
+                  <td className="px-4 py-2">{part.part_size}</td>
+                  <td className="px-4 py-2">
+                    {part.image && <img src={`/uploads/${part.image}`} alt="part" className="w-10 h-10 object-cover rounded" />}
+                  </td>
+                  <td className="px-4 py-2">{part.part_description}</td>
+                  <td className="px-4 py-2" onClick={e => e.stopPropagation()}>
+                    <button onClick={() => handleEdit(part)} className="mr-2 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Edit</button>
+                    <button onClick={() => handleDelete(part.id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {modal && (
-          <div className="modal-bg" onClick={() => setModal(null)}>
-            <div className="modal" onClick={e => e.stopPropagation()}>
-              <h2>{modal.model_number}</h2>
-              {modal.image && <img src={`/uploads/${modal.image}`} alt="part" style={{ width: 200, height: 200, objectFit: 'contain', marginBottom: 16 }} />}
-              <div className="modal-details-2col">
-                <div className="modal-col modal-col-left">
-                  <div><b>Model Number:</b> {modal.model_number}</div>
-                  <div><b>Article Number:</b> {modal.article_number}</div>
-                  <div><b>Article Name:</b> {modal.article_name}</div>
-                  <div><b>Part Weight:</b> {modal.part_weight}</div>
-                  <div><b>Part Size:</b> {modal.part_size}</div>
-                  <div><b>Part Description:</b> {modal.part_description}</div>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setModal(null)}>
+            <div className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+              <h2 className="text-2xl font-bold mb-4">{modal.model_number}</h2>
+              {modal.image && <img src={`/uploads/${modal.image}`} alt="part" className="w-48 h-48 object-contain mb-4 mx-auto" />}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="space-y-2">
+                  <div><span className="font-semibold">Model Number:</span> {modal.model_number}</div>
+                  <div><span className="font-semibold">Article Number:</span> {modal.article_number}</div>
+                  <div><span className="font-semibold">Article Name:</span> {modal.article_name}</div>
+                  <div><span className="font-semibold">Part Weight:</span> {modal.part_weight}</div>
+                  <div><span className="font-semibold">Part Size:</span> {modal.part_size}</div>
+                  <div><span className="font-semibold">Part Description:</span> {modal.part_description}</div>
                 </div>
-                <div className="modal-col modal-col-right">
-                  <div><b>Part Number:</b> {modal.part_name}</div>
-                  <div><b>Part Pseudo Name:</b> {modal.part_pseudo_name}</div>
+                <div className="space-y-2">
+                  <div><span className="font-semibold">Part Number:</span> {modal.part_name}</div>
+                  <div><span className="font-semibold">Part Pseudo Name:</span> {modal.part_pseudo_name}</div>
                 </div>
               </div>
-              <button onClick={() => setModal(null)}>Close</button>
+              <button onClick={() => setModal(null)} className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-semibold">Close</button>
             </div>
           </div>
         )}
       </div>
-      <style jsx>{`
-        .part-mgmt-container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
-        .part-form { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 1.5rem; margin-bottom: 2rem; }
-        .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
-        .form-group { display: flex; flex-direction: column; flex: 1; }
-        .form-group label { font-weight: 500; margin-bottom: 0.3rem; color: #333; }
-        .form-group input, .form-group textarea { padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; }
-        .form-group textarea { min-height: 38px; }
-        .form-row input[type="file"] { flex: 1; }
-        .form-row button { padding: 0.5rem 1.2rem; background: #0070f3; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .form-row button[type="button"] { background: #aaa; margin-left: 1rem; }
-        .part-list table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
-        .part-list th, .part-list td { padding: 0.5rem; border-bottom: 1px solid #eee; text-align: left; }
-        .part-list th { background: #f5f5f5; }
-        .part-list img { border-radius: 4px; }
-        .modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0008; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal { background: #fff; border-radius: 10px; padding: 2rem; min-width: 320px; max-width: 90vw; box-shadow: 0 8px 32px #0003; position: relative; }
-        .modal-details-2col {
-          display: flex;
-          gap: 2rem;
-          margin-bottom: 1rem;
-        }
-        .modal-col {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        .modal-col-left {
-          min-width: 180px;
-        }
-        .modal-col-right {
-          min-width: 180px;
-        }
-        .modal button { margin-top: 1rem; padding: 0.5rem 1.5rem; background: #0070f3; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .search-paging { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .paging { display: flex; gap: 1rem; align-items: center; }
-        .paging button { padding: 0.5rem 1rem; background: #0070f3; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-        .paging button:disabled { background: #ccc; cursor: not-allowed; }
-      `}</style>
     </div>
   );
 }

@@ -93,80 +93,80 @@ export default function Users({ user }) {
   };
 
   if (user && user.role !== 'admin') {
-    return <div style={{ padding: '2rem' }}>Access denied. Admin privileges required.</div>;
+    return <div className="p-8 text-center text-red-600">Access denied. Admin privileges required.</div>;
   }
 
-  if (loading) return <div style={{ padding: '2rem' }}>Loading...</div>;
-  if (error) return <div style={{ padding: '2rem', color: 'red' }}>Error: {error}</div>;
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (error) return <div className="p-8 text-center text-red-600">Error: {error}</div>;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Manage Users</h1>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-6">Manage Users</h1>
       <button
         onClick={() => {
           setEditingUser(null);
           setFormData({ name: '', email: '', role: 'user', password: '' });
           setShowForm(true);
         }}
-        style={{ marginBottom: '1rem', padding: '0.5rem 1rem', background: '#0070f3', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+        className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       >
         Add New User
       </button>
 
       {showForm && (
-        <form onSubmit={handleSubmit} style={{ marginBottom: '2rem', padding: '1rem', border: '1px solid #ccc', borderRadius: '4px' }}>
-          <h2>{editingUser ? 'Edit User' : 'Add New User'}</h2>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Name:</label>
+        <form onSubmit={handleSubmit} className="mb-8 p-4 border border-gray-300 rounded">
+          <h2 className="text-xl font-semibold mb-4">{editingUser ? 'Edit User' : 'Add New User'}</h2>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Name:</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Email:</label>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Email:</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Role:</label>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Role:</label>
             <select
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Password {editingUser ? '(leave blank to keep current)' : ''}:</label>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Password {editingUser ? '(leave blank to keep current)' : ''}:</label>
             <input
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               required={!editingUser}
-              style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
           <button
             type="submit"
-            style={{ padding: '0.5rem 1rem', background: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', marginRight: '0.5rem' }}
+            className="mr-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
             {editingUser ? 'Update' : 'Create'}
           </button>
           <button
             type="button"
             onClick={() => setShowForm(false)}
-            style={{ padding: '0.5rem 1rem', background: '#6c757d', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
           >
             Cancel
           </button>
