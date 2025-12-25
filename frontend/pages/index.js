@@ -21,9 +21,9 @@ export default function Dashboard() {
     setFiltered(
       !search
         ? parts
-        : parts.filter(p =>
+        : (Array.isArray(parts) ? parts.filter(p =>
             [p.model_number, p.article_number, p.article_name, p.part_name, p.part_pseudo_name].some(f => f && f.toLowerCase().includes(search.toLowerCase()))
-          )
+          ) : [])
     );
   }
 
