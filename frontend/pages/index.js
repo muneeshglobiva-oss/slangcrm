@@ -12,8 +12,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     axios.get('/api/parts').then(res => {
-      setParts(res.data);
-      setFiltered(res.data);
+      setParts(res.data.parts);
+      setFiltered(res.data.parts);
     });
   }, []);
 
