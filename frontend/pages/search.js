@@ -18,7 +18,7 @@ export default function SearchPage() {
   }, []);
 
   function handleSearch() {
-    axios.get(`/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data));
+    axios.get(`/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data.parts));
   }
 
   return (
