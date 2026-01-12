@@ -5,10 +5,12 @@ const mysql = require('mysql2/promise');
 const path = require('path');
 const fs = require('fs');
 const csv = require('csv-parser');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 require('dotenv').config();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 // MySQL connection
 const dbConfig = {
@@ -30,6 +32,105 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 async function getConnection() {
   return await mysql.createConnection(dbConfig);
 }
+
+// Initialize database tables
+async function initializeDatabase() {
+  try {
+    const conn = await getConnection();
+    await conn.execute(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role ENUM('admin', 'user') DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
+    await conn.end();
+    console.log('Database tables initialized');
+  } catch (err) {
+    console.error('Database initialization error:', err);
+  }
+}
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Access token required' });
+
+  jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key', (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+};
+
+// Auth routes
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const conn = await getConnection();
+    const [rows] = await conn.execute('SELECT * FROM users WHERE email = ?', [email]);
+    await conn.end();
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const user = rows[0];
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      token,
+      user: { id: user.id, email: user.email, role: user.role, name: user.name }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Initialize test users (run once)
+app.post('/api/auth/init-users', async (req, res) => {
+  try {
+    const conn = await getConnection();
+
+    // Create test users
+    const hashedAdminPassword = await bcrypt.hash('admin123', 10);
+    const hashedUserPassword = await bcrypt.hash('user123', 10);
+
+    // Delete existing and insert
+    await conn.execute('DELETE FROM users WHERE email = ?', ['admin@example.com']);
+    await conn.execute('DELETE FROM users WHERE email = ?', ['user@example.com']);
+
+    await conn.execute(
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      ['Admin User', 'admin@example.com', hashedAdminPassword, 'admin']
+    );
+
+    await conn.execute(
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      ['Regular User', 'user@example.com', hashedUserPassword, 'user']
+    );
+
+    await conn.end();
+    res.json({ message: 'Test users created successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.post('/api/parts/upload-csv', upload.single('csv'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -64,20 +165,31 @@ app.post('/api/parts/upload-csv', upload.single('csv'), async (req, res) => {
     });
 });
 
-// CRUD: Get all parts (with optional search)
+// CRUD: Get all parts (with optional search and paging)
 app.get('/api/parts', async (req, res) => {
-  const { q } = req.query;
+  const { q, page = 1, limit = 10 } = req.query;
   let sql = 'SELECT * FROM parts';
+  let countSql = 'SELECT COUNT(*) as total FROM parts';
   let params = [];
   if (q) {
     sql += ` WHERE model_number LIKE ? OR article_number LIKE ? OR article_name LIKE ? OR part_name LIKE ? OR part_pseudo_name LIKE ? OR part_description LIKE ?`;
+    countSql += ` WHERE model_number LIKE ? OR article_number LIKE ? OR article_name LIKE ? OR part_name LIKE ? OR part_pseudo_name LIKE ? OR part_description LIKE ?`;
     params = Array(6).fill(`%${q}%`);
   }
+  sql += ' ORDER BY id DESC LIMIT ? OFFSET ?';
+  params.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
   try {
     const conn = await getConnection();
     const [rows] = await conn.execute(sql, params);
+    const [countRows] = await conn.execute(countSql, params.slice(0, params.length - 2));
     await conn.end();
-    res.json(rows);
+    res.json({
+      parts: rows,
+      total: countRows[0].total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalPages: Math.ceil(countRows[0].total / parseInt(limit))
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -150,6 +262,93 @@ app.delete('/api/parts/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// User management routes (admin only)
+const requireAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+};
+
+// CRUD: Get all users
+app.get('/api/users', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const conn = await getConnection();
+    const [rows] = await conn.execute('SELECT id, name, email, role, created_at FROM users');
+    await conn.end();
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CRUD: Get user by ID
+app.get('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const conn = await getConnection();
+    const [rows] = await conn.execute('SELECT id, name, email, role, created_at FROM users WHERE id = ?', [req.params.id]);
+    await conn.end();
+    if (rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CRUD: Create user
+app.post('/api/users', authenticateToken, requireAdmin, async (req, res) => {
+  const { name, email, password, role } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const conn = await getConnection();
+    const [result] = await conn.execute(
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, role]
+    );
+    await conn.end();
+    res.json({ id: result.insertId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CRUD: Update user
+app.put('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+  const { name, email, role, password } = req.body;
+  try {
+    const conn = await getConnection();
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await conn.execute(
+        'UPDATE users SET name=?, email=?, role=?, password=? WHERE id=?',
+        [name, email, role, hashedPassword, req.params.id]
+      );
+    } else {
+      await conn.execute(
+        'UPDATE users SET name=?, email=?, role=? WHERE id=?',
+        [name, email, role, req.params.id]
+      );
+    }
+    await conn.end();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// CRUD: Delete user
+app.delete('/api/users/:id', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const conn = await getConnection();
+    await conn.execute('DELETE FROM users WHERE id = ?', [req.params.id]);
+    await conn.end();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.listen(PORT, async () => {
   console.log(`Backend API running on http://localhost:${PORT}`);
+  await initializeDatabase();
 });

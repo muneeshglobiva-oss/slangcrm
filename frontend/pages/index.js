@@ -12,8 +12,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     axios.get('/api/parts').then(res => {
-      setParts(res.data);
-      setFiltered(res.data);
+      setParts(res.data.parts);
+      setFiltered(res.data.parts);
     });
   }, []);
 
@@ -21,16 +21,16 @@ export default function Dashboard() {
     setFiltered(
       !search
         ? parts
-        : parts.filter(p =>
+        : (Array.isArray(parts) ? parts.filter(p =>
             [p.model_number, p.article_number, p.article_name, p.part_name, p.part_pseudo_name].some(f => f && f.toLowerCase().includes(search.toLowerCase()))
-          )
+          ) : [])
     );
   }
 
 
   // Model and Parts count
-  const modelCount = new Set(parts.map(p => p.model_number)).size;
-  const partsCount = parts.length;
+  const modelCount = Array.isArray(parts) ? new Set(parts.map(p => p.model_number)).size : 0;
+  const partsCount = Array.isArray(parts) ? parts.length : 0;
 
   return (
     <div className="dashboard-container">
@@ -69,7 +69,7 @@ export default function Dashboard() {
           <div className="weight-col">Part Weight</div>
           <div className="size-col">Part Size</div>
         </div>
-        {filtered.map(part => (
+        {Array.isArray(filtered) && filtered.map(part => (
           <div className="results-row" key={part.id}>
             <div className="model-col model-link" onClick={() => setModal(part)} style={{ color: '#d32f2f', cursor: 'pointer', textDecoration: 'underline' }}>{part.model_number}</div>
             <div className="article-col">{part.article_number}</div>

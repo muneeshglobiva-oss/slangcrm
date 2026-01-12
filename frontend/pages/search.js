@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import axios from 'axios';
 
 
@@ -6,9 +7,18 @@ export default function SearchPage() {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   function handleSearch() {
-    axios.get(`/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data));
+    axios.get(`/api/parts?q=${encodeURIComponent(search)}`).then(res => setResults(res.data.parts));
   }
 
   return (
@@ -40,7 +50,7 @@ export default function SearchPage() {
           <div className="weight-col">Part Weight</div>
           <div className="size-col">Part Size</div>
         </div>
-        {results.map(part => (
+        {Array.isArray(results) && results.map(part => (
           <div className="results-row" key={part.id}>
             <div className="model-col model-link" onClick={() => setSelected(part)} style={{ color: '#0070f3', cursor: 'pointer', textDecoration: 'underline' }}>{part.model_number}</div>
             <div className="article-col">{part.article_number}</div>
